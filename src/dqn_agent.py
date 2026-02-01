@@ -43,7 +43,7 @@ class DQNAgent:
                  lr=5e-4,
                  epsilon=1.0,
                  epsilon_min=0.05,
-                 epsilon_decay_steps=50000,
+                 epsilon_decay_steps=10000,
                  memory_size=10000,
                  batch_size=128):
 
@@ -125,7 +125,7 @@ class DQNAgent:
 # -------------------------------
 # Training
 # -------------------------------
-def train_dqn(episodes=500):
+def train_dqn(episodes=10000):
     agent = DQNAgent()
     rewards = []
 

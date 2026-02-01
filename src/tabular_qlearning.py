@@ -24,7 +24,7 @@ class TabularQLearning:
                  learning_rate_decay=0.99998,
                  discount_factor=0.99,
                  epsilon=1.0,
-                 epsilon_min=0.01,
+                 epsilon_min=0.05,
                  epsilon_decay=0.9995):
 
         self.lr = learning_rate
@@ -94,6 +94,7 @@ def train_tabular(episodes=50000):
 # Test Q-learning
 # -------------------------------
 def test_tabular(agent, episodes=100):
+    agent.epsilon = 0.0  # Disable Exploration
     results = []
 
     for ep in range(episodes):
@@ -102,7 +103,6 @@ def test_tabular(agent, episodes=100):
         total_reward = 0
 
         while not done:
-            agent.epsilon = 0.0  # Disable Exploration
             action = agent.choose_action(state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
