@@ -4,8 +4,8 @@ from dqn_agent import train_dqn, test_dqn
 
 def main():
     print("=== Training Tabular Q-Learning ===")
-    q_table = train_tabular(episodes=50000)
-    test_tabular(q_table, episodes=100)
+    tab_agent = train_tabular(episodes=50000)
+    test_tabular(tab_agent, episodes=100)
 
     print("\n=== Training DQN ===")
     dqn_agent = train_dqn(episodes=5000)

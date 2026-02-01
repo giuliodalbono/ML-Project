@@ -82,16 +82,18 @@ def train_tabular(episodes=50000):
         rewards.append(total_reward)
 
         if ep % 3000 == 0:
-            print(f"Episode {ep} | Reward: {total_reward} | Epsilon: {agent.epsilon:.3f}| Learning Rate: {agent.lr:.3f}")
+            avg_reward = np.mean(rewards[-100:])
+            print(f"Episode {ep} | Avg Reward (last 100): {avg_reward:.2f} | Epsilon: {agent.epsilon:.3f} | Learning "
+                  f"Rate: {agent.lr:.3f}")
 
     pu.plot_rewards(rewards, title="Tabular Q-Learning Training")
-    return agent.q_table
+    return agent
 
 
 # -------------------------------
 # Test Q-learning
 # -------------------------------
-def test_tabular(q_table, episodes=100):
+def test_tabular(agent, episodes=100):
     results = []
 
     for ep in range(episodes):
@@ -100,7 +102,8 @@ def test_tabular(q_table, episodes=100):
         total_reward = 0
 
         while not done:
-            action = np.argmax(q_table[state])
+            agent.epsilon = 0.0  # Disable Exploration
+            action = agent.choose_action(state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
             total_reward += reward

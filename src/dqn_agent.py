@@ -42,8 +42,8 @@ class DQNAgent:
                  gamma=0.99,
                  lr=5e-4,
                  epsilon=1.0,
-                 epsilon_min=0.01,
-                 epsilon_decay_steps=10000,
+                 epsilon_min=0.05,
+                 epsilon_decay_steps=50000,
                  memory_size=10000,
                  batch_size=128):
 
@@ -147,7 +147,10 @@ def train_dqn(episodes=500):
 
         rewards.append(total_reward)
         if ep % 100 == 0:
-            print(f"Episode {ep} | Reward: {total_reward} | Epsilon: {agent.epsilon:.3f}")
+            avg_reward = np.mean(rewards[-50:])
+            min_reward = np.min(rewards[-50:])
+            max_reward = np.max(rewards[-50:])
+            print(f"Episode {ep} | Avg: {avg_reward:.2f} | Min: {min_reward} | Max: {max_reward} | Epsilon: {agent.epsilon:.3f}")
 
     pu.plot_rewards(rewards, title="DQN Training")
     return agent
