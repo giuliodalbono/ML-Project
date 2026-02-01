@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.optim as optim
 import random
 from collections import deque
-import matplotlib.pyplot as plt
+import plot_utility as pu
 
 
 # -------------------------------
@@ -19,21 +19,6 @@ import matplotlib.pyplot as plt
 env = gym.make("Taxi-v3")
 STATE_SIZE = env.observation_space.n   # 500
 ACTION_SIZE = env.action_space.n       # 6
-
-
-# -------------------------------
-# Plot
-# -------------------------------
-def plot_rewards(rewards, title=""):
-    plt.figure(figsize=(10, 5))
-    plt.plot(rewards, alpha=0.5)
-    plt.plot(np.convolve(rewards, np.ones(100)/100, mode='valid'))
-    plt.title(title)
-    plt.xlabel("Episodes")
-    plt.ylabel("Reward")
-    plt.tight_layout()
-    plt.show()
-
 
 # -------------------------------
 # Neural Network
@@ -164,7 +149,7 @@ def train_dqn(episodes=500):
         if ep % 100 == 0:
             print(f"Episode {ep} | Reward: {total_reward} | Epsilon: {agent.epsilon:.3f}")
 
-    plot_rewards(rewards, title="DQN Training")
+    pu.plot_rewards(rewards, title="DQN Training")
     return agent
 
 
@@ -192,4 +177,4 @@ def test_dqn(agent, episodes=100):
         results.append(total_reward)
         print(f"Test episode {ep} | Reward: {total_reward}")
 
-    plot_rewards(results, title="DQN Test")
+    pu.plot_rewards(results, title="DQN Test")

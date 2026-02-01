@@ -6,7 +6,7 @@
 import gymnasium as gym
 import numpy as np
 import random
-import matplotlib.pyplot as plt
+import plot_utility as pu
 
 
 # -------------------------------
@@ -17,29 +17,20 @@ STATE_SIZE = env.observation_space.n   # 500
 ACTION_SIZE = env.action_space.n       # 6
 
 
-# -------------------------------
-# Plot
-# -------------------------------
-def plot_rewards(rewards, title=""):
-    plt.figure(figsize=(10, 5))
-    plt.plot(rewards, alpha=0.5)
-    plt.plot(np.convolve(rewards, np.ones(100)/100, mode='valid'))
-    plt.title(title)
-    plt.xlabel("Episodes")
-    plt.ylabel("Reward")
-    plt.tight_layout()
-    plt.show()
-
-
 class TabularQLearning:
     def __init__(self,
                  learning_rate=0.7,
+                 learning_rate_min=0.3,
+                 learning_rate_decay=0.99998,
                  discount_factor=0.99,
                  epsilon=1.0,
                  epsilon_min=0.01,
                  epsilon_decay=0.9995):
 
         self.lr = learning_rate
+        self.lr_min = learning_rate_min
+        self.lr_decay = learning_rate_decay
+
         self.gamma = discount_factor
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
@@ -57,6 +48,9 @@ class TabularQLearning:
         td_target = reward + self.gamma * best_next
         td_error = td_target - self.q_table[state, action]
         self.q_table[state, action] += self.lr * td_error
+
+    def decay_learning_rate(self):
+        self.lr = max(self.lr * self.lr_decay, self.lr_min)
 
     def decay_epsilon(self):
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
@@ -84,12 +78,13 @@ def train_tabular(episodes=50000):
             total_reward += reward
 
         agent.decay_epsilon()
+        agent.decay_learning_rate()
         rewards.append(total_reward)
 
         if ep % 3000 == 0:
-            print(f"Episode {ep} | Reward: {total_reward} | Epsilon: {agent.epsilon:.3f}")
+            print(f"Episode {ep} | Reward: {total_reward} | Epsilon: {agent.epsilon:.3f}| Learning Rate: {agent.lr:.3f}")
 
-    plot_rewards(rewards, title="Tabular Q-Learning Training")
+    pu.plot_rewards(rewards, title="Tabular Q-Learning Training")
     return agent.q_table
 
 
@@ -113,4 +108,4 @@ def test_tabular(q_table, episodes=100):
         results.append(total_reward)
         print(f"Test episode {ep} | Reward: {total_reward}")
 
-    plot_rewards(results, title="Tabular Q-Learning Test")
+    pu.plot_rewards(results, title="Tabular Q-Learning Test")

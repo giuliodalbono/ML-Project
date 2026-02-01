@@ -8,7 +8,7 @@ def main():
     test_tabular(q_table, episodes=100)
 
     print("\n=== Training DQN ===")
-    dqn_agent = train_dqn(episodes=500)
+    dqn_agent = train_dqn(episodes=5000)
     test_dqn(dqn_agent, episodes=100)
 
 
